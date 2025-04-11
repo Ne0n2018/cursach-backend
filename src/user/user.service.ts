@@ -10,7 +10,11 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async create(data: { email: string; name?: string }): Promise<User> {
+  async create(data: {
+    email: string;
+    name: string;
+    password: string;
+  }): Promise<User> {
     return this.prisma.user.create({ data });
   }
 }

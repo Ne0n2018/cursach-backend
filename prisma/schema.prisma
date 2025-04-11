@@ -14,8 +14,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+  TEACHER
+}
+
 model User {
-  id    String  @id @default(uuid())
-  email String  @unique
-  name  String?
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String // Храним хэшированный пароль
+  name      String
+  role      Role      @default(USER)
+  teacher   Teacher?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  // Связь с таблицей Teacher (для роли TEACHER)
+}
+
+model Teacher {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  subjects    String[]
+  description String?
+  hourlyRate  Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
