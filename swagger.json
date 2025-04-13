@@ -1,0 +1,1085 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          }
+        },
+        "summary": "Register a new user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully"
+          }
+        },
+        "summary": "Login a user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "AdminController_getAllUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "USER",
+                "ADMIN",
+                "TEACHER"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all users"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all users",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}": {
+      "delete": {
+        "operationId": "AdminController_deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a user",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/teachers": {
+      "get": {
+        "operationId": "AdminController_getAllTeachers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all teachers"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all teachers",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/teachers/{id}": {
+      "patch": {
+        "operationId": "AdminController_updateTeacher",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeacherDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Teacher updated successfully"
+          },
+          "404": {
+            "description": "Teacher not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a teacher profile",
+        "tags": [
+          "admin"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminController_deleteTeacher",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher deleted successfully"
+          },
+          "404": {
+            "description": "Teacher not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a teacher",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/bookings": {
+      "get": {
+        "operationId": "AdminController_getAllBookings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all bookings"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all bookings",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/bookings/{id}": {
+      "delete": {
+        "operationId": "AdminController_deleteBooking",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking deleted successfully"
+          },
+          "404": {
+            "description": "Booking not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a booking",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/reviews": {
+      "get": {
+        "operationId": "AdminController_getAllReviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all reviews"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all reviews",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/reviews/{id}": {
+      "delete": {
+        "operationId": "AdminController_deleteReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review deleted successfully"
+          },
+          "404": {
+            "description": "Review not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a review",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/teachers": {
+      "get": {
+        "operationId": "TeacherController_findAll",
+        "parameters": [
+          {
+            "name": "subject",
+            "required": false,
+            "in": "query",
+            "description": "Filter by subject",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of teachers"
+          }
+        },
+        "summary": "Get all teachers",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/{id}": {
+      "get": {
+        "operationId": "TeacherController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher details"
+          },
+          "404": {
+            "description": "Teacher not found"
+          }
+        },
+        "summary": "Get a teacher by ID",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/{id}/schedule": {
+      "get": {
+        "operationId": "TeacherController_getSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher's schedule"
+          },
+          "404": {
+            "description": "Teacher not found"
+          }
+        },
+        "summary": "Get a teacher's schedule",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/{id}/reviews": {
+      "get": {
+        "operationId": "TeacherController_getReviews",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of reviews"
+          },
+          "404": {
+            "description": "Teacher not found"
+          }
+        },
+        "summary": "Get reviews for a teacher",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/profile": {
+      "get": {
+        "operationId": "TeacherController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Teacher profile"
+          },
+          "404": {
+            "description": "Teacher profile not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get teacher profile",
+        "tags": [
+          "teachers"
+        ]
+      },
+      "patch": {
+        "operationId": "TeacherController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Teacher profile updated successfully"
+          },
+          "404": {
+            "description": "Teacher profile not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update teacher profile",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/schedule": {
+      "post": {
+        "operationId": "TeacherController_addSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schedule added successfully"
+          },
+          "400": {
+            "description": "Invalid time slot or conflict"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add available time slot to schedule",
+        "tags": [
+          "teachers"
+        ]
+      },
+      "get": {
+        "operationId": "TeacherController_getTeacherSchedule",
+        "parameters": [
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher schedule"
+          },
+          "404": {
+            "description": "Teacher profile not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get teacher schedule",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/schedule/{id}": {
+      "delete": {
+        "operationId": "TeacherController_deleteSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule deleted successfully"
+          },
+          "400": {
+            "description": "Cannot delete booked schedule"
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a time slot from schedule",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/bookings": {
+      "get": {
+        "operationId": "TeacherController_getBookings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of bookings"
+          },
+          "404": {
+            "description": "Teacher profile not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get teacher bookings",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/bookings/{id}": {
+      "patch": {
+        "operationId": "TeacherController_updateBooking",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Booking updated successfully"
+          },
+          "404": {
+            "description": "Booking not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a booking (e.g., confirm or cancel)",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/teachers/reviews": {
+      "get": {
+        "operationId": "TeacherController_getTeacherReviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of reviews"
+          },
+          "404": {
+            "description": "Teacher profile not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get teacher reviews",
+        "tags": [
+          "teachers"
+        ]
+      }
+    },
+    "/bookings": {
+      "post": {
+        "operationId": "BookingController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booking created successfully"
+          },
+          "400": {
+            "description": "Invalid time slot or conflict"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new booking",
+        "tags": [
+          "bookings"
+        ]
+      },
+      "get": {
+        "operationId": "BookingController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of bookings"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all bookings for the user",
+        "tags": [
+          "bookings"
+        ]
+      }
+    },
+    "/bookings/{id}": {
+      "patch": {
+        "operationId": "BookingController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Booking updated successfully"
+          },
+          "404": {
+            "description": "Booking not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a booking (e.g., cancel)",
+        "tags": [
+          "bookings"
+        ]
+      }
+    },
+    "/reviews": {
+      "post": {
+        "operationId": "ReviewController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Invalid request or already reviewed"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new review for a teacher",
+        "tags": [
+          "reviews"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "My NestJS API",
+    "description": "API documentation for the NestJS application",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operations related to authentication"
+    },
+    {
+      "name": "admin",
+      "description": "operations releted to admin"
+    },
+    {
+      "name": "teachers",
+      "description": "Operations related to teachers"
+    },
+    {
+      "name": "bookings",
+      "description": "Operations related to booking"
+    },
+    {
+      "name": "reviews",
+      "description": "Operations related to reviews"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the user",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "The password of the user",
+            "example": "password123"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the user",
+            "example": "John Doe"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user",
+            "enum": [
+              "USER",
+              "ADMIN",
+              "TEACHER"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name",
+          "role"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the user",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "The password of the user",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UpdateTeacherDto": {
+        "type": "object",
+        "properties": {
+          "subjects": {
+            "type": "array",
+            "description": "Subjects taught by the teacher",
+            "items": {
+              "type": "string",
+              "enum": [
+                "MATH",
+                "ENGLISH",
+                "PHYSICS",
+                "BIOLOGY",
+                "GEOGRAPHY",
+                "RUSSIAN"
+              ]
+            }
+          },
+          "hourlyRate": {
+            "type": "number",
+            "description": "Hourly rate of the teacher",
+            "example": 30
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the teacher",
+            "example": "Experienced math teacher"
+          }
+        }
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "subjects": {
+            "type": "array",
+            "description": "Subjects taught by the teacher",
+            "items": {
+              "type": "string",
+              "enum": [
+                "MATH",
+                "ENGLISH",
+                "PHYSICS",
+                "BIOLOGY",
+                "GEOGRAPHY",
+                "RUSSIAN"
+              ]
+            }
+          },
+          "hourlyRate": {
+            "type": "number",
+            "description": "Hourly rate of the teacher",
+            "example": 30
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the teacher",
+            "example": "Experienced math teacher"
+          }
+        }
+      },
+      "CreateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Start time of the schedule",
+            "example": "2025-04-15T14:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of the schedule",
+            "example": "2025-04-15T15:00:00Z"
+          }
+        },
+        "required": [
+          "startTime",
+          "endTime"
+        ]
+      },
+      "UpdateBookingDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the booking",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CreateBookingDto": {
+        "type": "object",
+        "properties": {
+          "teacherId": {
+            "type": "string",
+            "description": "ID of the teacher",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time of the lesson",
+            "example": "2025-04-15T14:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of the lesson",
+            "example": "2025-04-15T15:00:00Z"
+          }
+        },
+        "required": [
+          "teacherId",
+          "startTime",
+          "endTime"
+        ]
+      },
+      "CreateReviewDto": {
+        "type": "object",
+        "properties": {
+          "teacherId": {
+            "type": "string",
+            "description": "ID of the teacher",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Rating (1-5)",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "Comment",
+            "example": "Great teacher!"
+          }
+        },
+        "required": [
+          "teacherId",
+          "rating"
+        ]
+      }
+    }
+  }
+}

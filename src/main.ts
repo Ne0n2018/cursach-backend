@@ -4,6 +4,7 @@ import { WinstonLoggerService } from './logger.service';
 import * as morgan from 'morgan';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as fs from 'fs';
 
 async function bootstrap() {
   const logger = new WinstonLoggerService();
@@ -37,9 +38,11 @@ async function bootstrap() {
       .addTag('teachers', 'Operations related to teachers')
       .addTag('bookings', 'Operations related to booking')
       .addTag('reviews', 'Operations related to reviews')
+      .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
+    fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
     SwaggerModule.setup('api', app, document);
 
     const port = parseInt(process.env.PORT || '3000', 10);
