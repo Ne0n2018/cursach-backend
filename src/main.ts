@@ -17,8 +17,8 @@ async function bootstrap() {
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
-        forbidNonWhitelisted: true, // Выбрасывает ошибку, если есть лишние поля
-        transform: true, // Автоматически преобразует данные в типы, указанные в DTO
+        forbidNonWhitelisted: true,
+        transform: true,
       }),
     );
 
@@ -34,7 +34,9 @@ async function bootstrap() {
       .setVersion('1.0')
       .addTag('auth', 'Operations related to authentication')
       .addTag('admin', 'operations releted to admin')
-      .addTag('users', 'Operations related to users')
+      .addTag('teachers', 'Operations related to teachers')
+      .addTag('bookings', 'Operations related to booking')
+      .addTag('reviews', 'Operations related to reviews')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
