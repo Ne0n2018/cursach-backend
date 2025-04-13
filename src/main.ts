@@ -16,7 +16,7 @@ async function bootstrap() {
     // Включаем валидацию
     app.useGlobalPipes(
       new ValidationPipe({
-        whitelist: true, // Удаляет поля, которых нет в DTO
+        whitelist: true,
         forbidNonWhitelisted: true, // Выбрасывает ошибку, если есть лишние поля
         transform: true, // Автоматически преобразует данные в типы, указанные в DTO
       }),
@@ -32,8 +32,9 @@ async function bootstrap() {
       .setTitle('My NestJS API')
       .setDescription('API documentation for the NestJS application')
       .setVersion('1.0')
-      .addTag('users', 'Operations related to users')
       .addTag('auth', 'Operations related to authentication')
+      .addTag('admin', 'operations releted to admin')
+      .addTag('users', 'Operations related to users')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

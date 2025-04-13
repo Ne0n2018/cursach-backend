@@ -20,25 +20,81 @@ enum Role {
   TEACHER
 }
 
+enum LessonStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum Subject {
+  MATH
+  ENGLISH
+  PHYSICS
+  BIOLOGY
+  GEOGRAPHY
+  RUSSIAN
+}
+
 model User {
   id        String    @id @default(uuid())
   email     String    @unique
-  password  String // Храним хэшированный пароль
-  name      String
+  password  String
+  name      String?
   role      Role      @default(USER)
-  teacher   Teacher?
   createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  // Связь с таблицей Teacher (для роли TEACHER)
+  updatedAt DateTime  @updatedAt
+  teacher   Teacher? // Связь с репетитором (для роли TEACHER)
+  bookings  Booking[] // Бронирования, сделанные пользователем
+  reviews   Review[] // Отзывы, оставленные пользователем
 }
 
 model Teacher {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
-  subjects    String[]
-  description String?
-  hourlyRate  Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String     @id @default(uuid())
+  userId      String     @unique
+  user        User       @relation(fields: [userId], references: [id])
+  subjects    Subject[] // Предметы, которые преподаёт репетитор (например, ["Math", "Physics"])
+  description String? // Описание репетитора
+  hourlyRate  Float // Стоимость часа
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  schedules   Schedule[] // Расписание репетитора
+  bookings    Booking[] // Бронирования уроков с этим репетитором
+  reviews     Review[] // Отзывы о репетиторе
+}
+
+model Schedule {
+  id        String   @id @default(uuid())
+  teacherId String
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  startTime DateTime // Начало доступного времени
+  endTime   DateTime // Конец доступного времени
+  isBooked  Boolean  @default(false) // Забронировано ли это время
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  teacherId String
+  teacher   Teacher      @relation(fields: [teacherId], references: [id])
+  startTime DateTime // Время начала урока
+  endTime   DateTime // Время окончания урока
+  status    LessonStatus @default(PENDING) // Статус бронирования
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  teacherId String
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  rating    Int // Оценка (например, от 1 до 5)
+  comment   String? // Комментарий
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
