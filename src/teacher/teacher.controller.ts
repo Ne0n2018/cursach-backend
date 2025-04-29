@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import {
   Controller,
   Get,
@@ -101,7 +100,6 @@ export class TeacherController {
 
   // Эндпоинты для поиска репетиторов (доступны всем)
   @Get()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all teachers' })
   @ApiResponse({ status: 200, description: 'List of teachers' })
   @ApiQuery({

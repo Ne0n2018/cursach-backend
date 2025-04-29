@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -29,7 +28,6 @@ export class AuthService {
     });
 
     if (role === 'TEACHER') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       await this.prisma.teacher.create({
         data: {
           userId: user.id,
@@ -39,7 +37,6 @@ export class AuthService {
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       accessToken: this.jwtService.sign(payload),
@@ -51,14 +48,21 @@ export class AuthService {
       where: { email },
     });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (!user) {
+      throw new BadRequestException('Invalid credentials');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
     const payload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken,
+      user, // Убедимся, что user возвращается
     };
   }
 }

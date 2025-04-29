@@ -14,6 +14,13 @@ async function bootstrap() {
       logger,
     });
 
+    app.enableCors({
+      origin: 'http://localhost:3001',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Добавляем OPTIONS
+      credentials: true,
+      allowedHeaders: 'Content-Type,Authorization',
+    });
+
     // Включаем валидацию
     app.useGlobalPipes(
       new ValidationPipe({

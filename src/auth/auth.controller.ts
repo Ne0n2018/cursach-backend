@@ -5,6 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Optional,
+  Get,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -13,8 +16,10 @@ import {
   ApiResponse,
   ApiBody,
   ApiProperty,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength } from 'class-validator';
+import { JwtAuthGuard } from './auth.guard';
 
 class RegisterDto {
   @ApiProperty({
@@ -87,5 +92,16 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   async login(@Body() data: LoginDto) {
     return this.authService.login(data.email, data.password);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({ status: 200, description: 'User data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  me(@Request() req) {
+    console.log('Me endpoint called');
+    return req.user;
   }
 }

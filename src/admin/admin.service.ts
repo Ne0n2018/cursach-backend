@@ -12,7 +12,6 @@ export class AdminService {
       skip,
       take: limit,
       where: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         role: role ? role : undefined,
       },
       include: {
