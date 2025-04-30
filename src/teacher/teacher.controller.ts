@@ -22,6 +22,7 @@ import {
   ApiQuery,
   ApiBody,
   ApiProperty,
+  ApiParam,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -98,7 +99,7 @@ class UpdateBookingDto {
 export class TeacherController {
   constructor(private teacherService: TeacherService) {}
 
-  // Эндпоинты для поиска репетиторов (доступны всем)
+  // Эндпоинт для поиска всех репетиторов (доступен всем)
   @Get()
   @ApiOperation({ summary: 'Get all teachers' })
   @ApiResponse({ status: 200, description: 'List of teachers' })
@@ -117,18 +118,25 @@ export class TeacherController {
     return this.teacherService.findAll(subject, page, limit);
   }
 
-  @Get(':id')
+  // Поиск репетитора по userId
+  @Get('user/:userId')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get a teacher by ID' })
+  @ApiOperation({ summary: 'Get a teacher by user ID' })
   @ApiResponse({ status: 200, description: 'Teacher details' })
   @ApiResponse({ status: 404, description: 'Teacher not found' })
-  async findOne(@Param('id') id: string) {
-    return this.teacherService.findOne(id);
+  @ApiParam({
+    name: 'userId',
+    description: 'User ID of the teacher',
+    type: String,
+  })
+  async findOne(@Param('userId') userId: string) {
+    return this.teacherService.findOne(userId);
   }
 
-  @Get(':id/schedule')
+  // Получение расписания репетитора по userId
+  @Get('user/:userId/schedule')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: "Get a teacher's schedule" })
+  @ApiOperation({ summary: "Get a teacher's schedule by user ID" })
   @ApiResponse({ status: 200, description: "Teacher's schedule" })
   @ApiResponse({ status: 404, description: 'Teacher not found' })
   @ApiQuery({
@@ -136,20 +144,34 @@ export class TeacherController {
     required: false,
     description: 'Date in YYYY-MM-DD format',
   })
-  async getSchedule(@Param('id') id: string, @Query('date') date?: string) {
-    return this.teacherService.getSchedule(id, date);
+  @ApiParam({
+    name: 'userId',
+    description: 'User ID of the teacher',
+    type: String,
+  })
+  async getSchedule(
+    @Param('userId') userId: string,
+    @Query('date') date?: string,
+  ) {
+    return this.teacherService.getSchedule(userId, date);
   }
 
-  @Get(':id/reviews')
+  // Получение отзывов о репетиторе по userId
+  @Get('user/:userId/reviews')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get reviews for a teacher' })
+  @ApiOperation({ summary: 'Get reviews for a teacher by user ID' })
   @ApiResponse({ status: 200, description: 'List of reviews' })
   @ApiResponse({ status: 404, description: 'Teacher not found' })
-  async getReviews(@Param('id') id: string) {
-    return this.teacherService.getReviews(id);
+  @ApiParam({
+    name: 'userId',
+    description: 'User ID of the teacher',
+    type: String,
+  })
+  async getReviews(@Param('userId') userId: string) {
+    return this.teacherService.getReviews(userId);
   }
 
-  // Эндпоинты для репетиторов (доступны только TEACHER)
+  // Получение профиля репетитора
   @Get('profile')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -161,21 +183,35 @@ export class TeacherController {
     return this.teacherService.getProfile(req.user.sub);
   }
 
-  @Patch('profile')
+  // Обновление профиля репетитора по userId
+  @Patch('user/:userId/profile')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update teacher profile' })
+  @ApiOperation({ summary: 'Update teacher profile by user ID' })
   @ApiResponse({
     status: 200,
     description: 'Teacher profile updated successfully',
   })
   @ApiResponse({ status: 404, description: 'Teacher profile not found' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: You can only update your own profile',
+  })
+  @ApiParam({
+    name: 'userId',
+    description: 'User ID of the teacher',
+    type: String,
+  })
   @ApiBody({ type: UpdateProfileDto })
-  async updateProfile(@Request() req, @Body() data: UpdateProfileDto) {
-    return this.teacherService.updateProfile(req.user.sub, data);
+  async updateProfile(
+    @Param('userId') userId: string,
+    @Body() data: UpdateProfileDto,
+  ) {
+    return this.teacherService.updateProfile(userId, data);
   }
 
+  // Добавление доступного времени
   @Post('schedule')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -188,6 +224,7 @@ export class TeacherController {
     return this.teacherService.addSchedule(req.user.sub, data);
   }
 
+  // Получение расписания репетитора
   @Get('schedule')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -204,6 +241,7 @@ export class TeacherController {
     return this.teacherService.getTeacherSchedule(req.user.sub, date);
   }
 
+  // Удаление временного слота
   @Delete('schedule/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -216,6 +254,7 @@ export class TeacherController {
     return this.teacherService.deleteSchedule(req.user.sub, id);
   }
 
+  // Получение бронирований
   @Get('bookings')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -227,6 +266,7 @@ export class TeacherController {
     return this.teacherService.getBookings(req.user.sub);
   }
 
+  // Обновление бронирования
   @Patch('bookings/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)
@@ -243,6 +283,7 @@ export class TeacherController {
     return this.teacherService.updateBooking(req.user.sub, id, data);
   }
 
+  // Получение отзывов репетитора
   @Get('reviews')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.TEACHER)

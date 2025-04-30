@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Injectable,
   NotFoundException,
@@ -14,8 +10,8 @@ import { Subject, LessonStatus } from '@prisma/client';
 export class TeacherService {
   constructor(private prisma: PrismaService) {}
 
-  // Методы для поиска репетиторов (уже есть)
-  findAll(subject?: string, page: number = 1, limit: number = 10) {
+  // Поиск всех репетиторов
+  async findAll(subject?: string, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
     return this.prisma.teacher.findMany({
       skip,
@@ -30,9 +26,10 @@ export class TeacherService {
     });
   }
 
-  async findOne(id: string) {
+  // Поиск репетитора по ID пользователя
+  async findOne(userId: string) {
     const teacher = await this.prisma.teacher.findUnique({
-      where: { id },
+      where: { userId },
       include: {
         user: true,
         reviews: true,
@@ -45,9 +42,10 @@ export class TeacherService {
     return teacher;
   }
 
-  async getSchedule(id: string, date?: string) {
+  // Получить расписание репетитора
+  async getSchedule(userId: string, date?: string) {
     const teacher = await this.prisma.teacher.findUnique({
-      where: { id },
+      where: { userId },
     });
     if (!teacher) {
       throw new NotFoundException('Teacher not found');
@@ -60,7 +58,7 @@ export class TeacherService {
 
     return this.prisma.schedule.findMany({
       where: {
-        teacherId: id,
+        teacherId: teacher.id,
         startTime: {
           gte: startOfDay,
           lte: endOfDay,
@@ -69,9 +67,10 @@ export class TeacherService {
     });
   }
 
-  async getReviews(id: string) {
+  // Получить отзывы о репетиторе
+  async getReviews(userId: string) {
     const teacher = await this.prisma.teacher.findUnique({
-      where: { id },
+      where: { userId },
     });
     if (!teacher) {
       throw new NotFoundException('Teacher not found');
@@ -79,7 +78,7 @@ export class TeacherService {
 
     return this.prisma.review.findMany({
       where: {
-        teacherId: id,
+        teacherId: teacher.id,
       },
       include: {
         user: true,
@@ -87,9 +86,7 @@ export class TeacherService {
     });
   }
 
-  // Новые методы для учителя
-
-  // Получить свой профиль
+  // Получить профиль репетитора
   async getProfile(userId: string) {
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
@@ -105,13 +102,16 @@ export class TeacherService {
     return teacher;
   }
 
-  // Обновить свой профиль
+  // Обновить профиль репетитора
   async updateProfile(
     userId: string,
     data: { subjects?: Subject[]; hourlyRate?: number; description?: string },
   ) {
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
+      include: {
+        user: true,
+      },
     });
 
     if (!teacher) {
@@ -181,7 +181,7 @@ export class TeacherService {
     });
   }
 
-  // Получить своё расписание
+  // Получить расписание репетитора
   async getTeacherSchedule(userId: string, date?: string) {
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
@@ -238,7 +238,7 @@ export class TeacherService {
     });
   }
 
-  // Получить бронирования своих уроков
+  // Получить бронирования уроков
   async getBookings(userId: string) {
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },
@@ -311,7 +311,7 @@ export class TeacherService {
     });
   }
 
-  // Получить свои отзывы
+  // Получить отзывы о репетиторе
   async getTeacherReviews(userId: string) {
     const teacher = await this.prisma.teacher.findUnique({
       where: { userId },

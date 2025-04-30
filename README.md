@@ -29,6 +29,7 @@
 
 ```bash
 $ npm install
+$ rename .env.forExample
 ```
 
 ## Compile and run the project
